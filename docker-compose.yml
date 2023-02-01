@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  app:
+    build: 
+      context: ./docker-context/app
+    restart: always
+    networks:
+      - default
+    volumes:
+      - "./app:/app"
+      - static-data:/data/static
+      - media-data:/data/media
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_PORT=${DB_PORT}
+      - DEBUG=${DEBUG}
+      - SECRET_KEY=${DJANGO_SECRET_KEY}
+      - ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+
+  db:
+    build: 
+      context: ./docker-context/db
+    restart: always
+    networks:
+      - default
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}    
+    
+
+volumes:
+  db-data:
+  static-data:
+  media-data:
+
+networks:
+  default:
