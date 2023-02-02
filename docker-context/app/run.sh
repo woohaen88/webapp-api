@@ -9,7 +9,7 @@ fi
 
 # Wait for the postgres docker to be running
 while ! nc $DB_HOST $DB_PORT; do  
-  >&2 echo "Postgres is unavailable - sleeping"
+  >&2 echo "MYSQL is unavailable - sleeping"
   sleep 1
 done
 

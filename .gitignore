@@ -430,3 +430,4 @@ $RECYCLE.BIN/
 
 
 sample.txt
+app/core/migrations/0*.py
