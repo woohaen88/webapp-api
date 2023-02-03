@@ -10,6 +10,7 @@ from django.contrib.auth.models import (
 )
 
 from django.conf import settings
+from django.utils import timezone
 
 
 class UserManager(BaseUserManager):
@@ -49,3 +50,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = "email"
+
+
+class Camping(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="campings")
+    title = models.CharField(max_length=255)
+    visited_dt = models.DateTimeField(default=timezone.now)
+    review = models.TextField()
+    price = models.PositiveIntegerField()
+
+    update_dt = models.DateTimeField(auto_now=True)
+    create_dt = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["-update_dt"]

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # installed apps
     "core.apps.CoreConfig",
+    "camping.apps.CampingConfig",
     # 3rd apps
     "rest_framework",
     "drf_spectacular",

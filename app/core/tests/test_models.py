@@ -6,6 +6,21 @@ from django.test import TestCase
 
 from django.contrib.auth import get_user_model
 
+from .. import models
+
+
+
+
+def create_user(**params):
+    defaults = {
+        "email": "user@example.com",
+        "password": "testpassword123"
+    }
+    defaults.update(params)
+
+    user = get_user_model().objects.create_user(**defaults)
+    return user
+
 
 class ModelTests(TestCase):
     """Test models"""
@@ -33,3 +48,21 @@ class ModelTests(TestCase):
         self.assertTrue(user.is_staff)
         self.assertEqual(name, user.name)
         self.assertTrue(user.is_superuser)
+
+    ################################
+    ###    CAMPING MODEL TEST    ###
+    ################################
+    def test_create_camping(self):
+        """Test: Create Camping"""
+
+        user = create_user()
+        camping = models.Camping.objects.create(
+            user=user,
+            title="DeepForest",
+            visited_dt="2022-12-03",
+            review="Some review",
+            price=50000,
+        )
+        self.assertEqual(str(camping), camping.title)
+
+
