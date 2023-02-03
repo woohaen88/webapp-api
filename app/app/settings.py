@@ -32,7 +32,7 @@ _DEBUG = 1 if os.getenv("DEBUG", 1) in ["true", "t", "1", "True", "on"] else 0
 DEBUG = bool(_DEBUG)
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 ALLOWED_HOSTS.extend(os.getenv("ALLOWED_HOSTS", "").split(":"))
 

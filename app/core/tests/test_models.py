@@ -28,6 +28,8 @@ class ModelTests(TestCase):
         """관리자 계정 생성"""
         email = "user@example.com"
         password = "password"
-        user = get_user_model().objects.create_superuser(email, password)
+        name = email.split("@")[0]
+        user = get_user_model().objects.create_superuser(email, password, name=name)
         self.assertTrue(user.is_staff)
+        self.assertEqual(name, user.name)
         self.assertTrue(user.is_superuser)

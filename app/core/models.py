@@ -30,7 +30,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_field):
         """관리자 계정 생성 함수"""
 
-        user = self.create_user(email, password)
+        user = self.create_user(email, password, **extra_field)
         user.is_superuser = True
         user.is_staff = True
 
