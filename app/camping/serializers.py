@@ -12,8 +12,12 @@ class CampingSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
-            "visited_date",
+            "visited_dt",
             "review",
             "price",
         ]
         read_only_fields = ["id"]
+
+    # def create(self, validated_data):
+    #     """Create a camping"""
+    #     auth_user = self.context.get("request").user

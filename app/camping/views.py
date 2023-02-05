@@ -24,3 +24,7 @@ class CampingViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         return self.serializer_class
+
+    def perform_create(self, serializer):
+        """Create a new camping"""
+        serializer.save(user=self.request.user)
