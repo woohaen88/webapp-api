@@ -73,6 +73,7 @@ class PrivateRecipeAPITests(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_retrieve_campings(self):
+        """Test: 인증된 유저에 대해서 모은 캠핑 리스트 조회"""
         create_camping(self.user)
         create_camping(self.user)
 
@@ -82,8 +83,8 @@ class PrivateRecipeAPITests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serialzier.data)
 
-    def test_recipe_list_limited_user(self):
-        """Test list of recipes is limited to authenticated user."""
+    def test_recipe_list_ilmited_user(self):
+        """Test list of campings is limited to authenticated user."""
         other_user = create_user(
             email="other@example.com",
             password="password123",
@@ -164,3 +165,29 @@ class PrivateRecipeAPITests(TestCase):
         for key, value in update_payload.items():
             self.assertEqual(getattr(camping, key), value)
         self.assertEqual(camping.user, self.user)
+
+    def test_delete_camping(self):
+        """Test: 인증된 유저에 대해서 캠핑 삭제"""
+        camping = create_camping(user=self.user)
+
+        url = detail_url(camping.id)
+
+        res = self.client.delete(url)
+        self.assertFalse(Camping.objects.filter(id=camping.id).exists())
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_camping_other_users_camping_error(self):
+        """Test: 다른사람이 캠핑을 생성하려하면 error"""
+        new_user = create_user(
+            email="user2@example",
+            name="user2"
+        )
+        camping = create_camping(user=new_user)
+
+        url = detail_url(camping.id)
+
+        # 현재 인증되어 있는 유저는 self.user
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTrue(Camping.objects.filter(id=camping.id).exists())
