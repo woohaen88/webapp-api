@@ -5,6 +5,7 @@ Test for models
 from django.test import TestCase
 
 from django.contrib.auth import get_user_model
+from django.utils.text import slugify
 
 from .. import models
 
@@ -65,4 +66,18 @@ class ModelTests(TestCase):
         )
         self.assertEqual(str(camping), camping.title)
 
+    ###########################################
+    #####         TAG MODEL TEST          #####
+    ###########################################
+    def test_create_camping_tag(self):
+        """Test: Create Camping Tag"""
+
+        user = create_user()
+        camping = models.CampingTag.objects.create(
+            user=user,
+            name="tag",
+            slug=slugify("tag", allow_unicode=True),
+        )
+
+        self.assertEqual(str(camping), camping.name)
 

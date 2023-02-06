@@ -41,3 +41,7 @@ class UserAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+@admin.register(models.CampingTag)
+class CampingTagAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("name",),}
