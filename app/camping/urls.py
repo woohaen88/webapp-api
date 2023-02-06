@@ -11,7 +11,6 @@ router.register("campings", views.CampingViewSet)
 router.register("tags", views.TagViewSet)
 
 app_name = 'camping'
-print(router.urls)
 
 urlpatterns = [
     path("", include(router.urls))
