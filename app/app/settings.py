@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # installed apps
     "core.apps.CoreConfig",
     "camping.apps.CampingConfig",
+    "user.apps.UserConfig",
     # 3rd apps
     "rest_framework",
     "drf_spectacular",
