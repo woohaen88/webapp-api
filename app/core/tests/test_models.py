@@ -2,14 +2,11 @@
 Test for models
 """
 
-from django.test import TestCase
-
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django.utils.text import slugify
 
-from .. import models
-
-
+from core import models
 
 
 def create_user(**params):
@@ -76,8 +73,20 @@ class ModelTests(TestCase):
         camping = models.CampingTag.objects.create(
             user=user,
             name="tag",
-            slug=slugify("tag", allow_unicode=True),
+            # slug=slugify("tag", allow_unicode=True),
         )
 
         self.assertEqual(str(camping), camping.name)
 
+    def test_create_recipe(self):
+        """Recipe model create"""
+        user = create_user()
+        recipe = models.Recipe.objects.create(
+            user=user,
+            title="some_title",
+            description="some description",
+            time_minutes=5,
+            price=10,
+            link="http://example.com",
+        )
+        self.assertEqual(str(recipe), recipe.title)

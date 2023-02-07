@@ -1,19 +1,19 @@
 """
 Tests for the Django admin modification
 """
-from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
+from django.test import TestCase, Client
 from django.urls import reverse
-
 from rest_framework import status
 
 
 def create_user(**kwargs):
-    defaults = {"email": "user@example.com", "password":"test123!@#", "name":"user"}
+    defaults = {"email": "user@example.com", "password": "test123!@#", "name": "user"}
     defaults.update(kwargs)
 
     user = get_user_model().objects.create_user(**defaults)
     return user
+
 
 class AdminSiteTests(TestCase):
     """Django admin 테스트"""

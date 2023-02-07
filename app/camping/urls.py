@@ -2,9 +2,10 @@
 URL mapping for camping
 """
 
-from rest_framework.routers import DefaultRouter
-from camping import views
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+from camping import views
 
 router = DefaultRouter()
 router.register("campings", views.CampingViewSet)

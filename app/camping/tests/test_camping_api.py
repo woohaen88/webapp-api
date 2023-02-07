@@ -1,23 +1,20 @@
 """
 test camping api
 """
+from datetime import datetime
+
+import resource
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-
-from datetime import datetime
-
-from camping.serializers import CampingSerializer
-from core.models import Camping
+from django.utils.text import slugify
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from camping.serializers import CampingSerializer
+from core.models import Camping, CampingTag
+
 CAMPING_URL = reverse("camping:camping-list")
-
-
-def transform_str_to_datetime(date):
-    date_obj = datetime.strptime(date, "%Y-%m-%d")
-    return date_obj
 
 
 def create_camping(user, **params):
@@ -25,7 +22,7 @@ def create_camping(user, **params):
 
     defaults = dict(
         title="DeepForest",
-        visited_dt=transform_str_to_datetime("2022-12-03"),
+        visited_dt="2022-12-03",
         review="Some review",
         price=50000,
     )
@@ -105,7 +102,7 @@ class PrivateRecipeAPITests(TestCase):
 
         payload = dict(
             title="DeepForest",
-            visited_dt=transform_str_to_datetime("2022-12-03"),
+            visited_dt="2022-12-03",
             review="Some review",
             price=50000,
         )
@@ -114,7 +111,10 @@ class PrivateRecipeAPITests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)  # 상태코드는 200이어야함
         camping = Camping.objects.get(id=res.data.get("id"))  # payload 각 속성별 value값이 object안에 있어야함
         for key, value in payload.items():
-            self.assertEqual(getattr(camping, key), value)
+            if key == 'visited_dt':
+                self.assertEqual(getattr(camping, key), datetime.strptime(payload.get('visited_dt'), '%Y-%m-%d'))
+            else:
+                self.assertEqual(getattr(camping, key), value)
         self.assertEqual(camping.user, self.user)  # user는 로그인한 유저와 같아야함
         self.assertEqual(camping.user, self.user)  # user는 로그인한 유저와 같아야함
 
@@ -140,7 +140,7 @@ class PrivateRecipeAPITests(TestCase):
 
         original_payload = dict(
             title="DeepForest",
-            visited_dt=transform_str_to_datetime("2022-12-03"),
+            visited_dt="2022-12-03",
             review="Some review",
             price=50000,
         )
@@ -151,7 +151,7 @@ class PrivateRecipeAPITests(TestCase):
 
         update_payload = dict(
             title="new DeepForest",
-            visited_dt=transform_str_to_datetime("2022-12-21"),
+            visited_dt="2022-12-21",
             review="new Some review",
             price=10000,
         )
@@ -163,7 +163,10 @@ class PrivateRecipeAPITests(TestCase):
         camping.refresh_from_db()
 
         for key, value in update_payload.items():
-            self.assertEqual(getattr(camping, key), value)
+            if key == 'visited_dt':
+                self.assertEqual(getattr(camping, key), datetime.strptime(update_payload.get('visited_dt'), '%Y-%m-%d'))
+            else:
+                self.assertEqual(getattr(camping, key), value)
         self.assertEqual(camping.user, self.user)
 
     def test_delete_camping(self):
@@ -191,3 +194,80 @@ class PrivateRecipeAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
         self.assertTrue(Camping.objects.filter(id=camping.id).exists())
+
+    def test_camping_create_include_tag(self):
+        """
+        Test: 캠핑에 포스트 요청을 보낼 때 tag를 포함하여 보냄
+        """
+
+        CampingTag.objects.create(user=self.user, name="tag1",)
+        CampingTag.objects.create(user=self.user, name="tag2",)
+
+        payload = dict(
+            title="DeepForest",
+            visited_dt="2022-12-03",
+            review="Some review",
+            price=50000,
+        )
+
+        camping = create_camping(user=self.user, **payload)
+
+        res = self.client.post(CAMPING_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+        for payload_Key, payload_value in payload.items():
+            self.assertTrue(getattr(camping, payload_Key), payload_value)
+
+        tag_names = ["tag1", "tag2"]
+        for camping_tags, tag_name in zip(camping.camping_tags.all(), tag_names):
+            self.assertEqual(camping_tags.name, tag_name)
+
+    def test_create_tag_on_update(self):
+        """
+        camping object를 만들고 태그 업데이트
+        """
+        camping = create_camping(user=self.user)
+
+        payload = dict(camping_tags=[dict(name="lunch")])
+
+        url = detail_url(camping.id)
+
+        res = self.client.patch(url, payload, format="json")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        tag = CampingTag.objects.get(user=self.user, name="lunch")
+        self.assertIn(tag, CampingTag.objects.all())
+
+    def test_update_camping_assign_tag(self):
+        """
+        Test assign an existing tag when updating a camping.
+        """
+        tag_breakfast = CampingTag.objects.create(user=self.user, name="breakfast")
+        camping = create_camping(user=self.user)
+        camping.camping_tags.add(tag_breakfast)
+
+        # create another tag
+        tag_lunch = CampingTag.objects.create(user=self.user, name="lunch")
+
+        url = detail_url(camping.id)
+        payload = {"camping_tags": [{"name": "lunch"}]}
+
+        res = self.client.patch(url, payload, format='json')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_clear_camping_tags(self):
+        """Test clearing a recipes tags."""
+        dessert_tag = CampingTag.objects.create(user=self.user, name="Dessert")
+        camping = create_camping(user=self.user)
+        camping.camping_tags.add(dessert_tag)
+
+        payload = dict(camping_tags=[])
+
+        url = detail_url(camping.id)
+        res = self.client.patch(url, payload, format="json")
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(camping.camping_tags.count(), 0)
+
+
+

@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 
 import pymysql
 
@@ -19,7 +19,6 @@ pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -31,11 +30,9 @@ SECRET_KEY = os.getenv("SECRET_KEY", "changeme")
 _DEBUG = 1 if os.getenv("DEBUG", 1) in ["true", "t", "1", "True", "on"] else 0
 DEBUG = bool(_DEBUG)
 
-
 ALLOWED_HOSTS = ["*"]
 
 ALLOWED_HOSTS.extend(os.getenv("ALLOWED_HOSTS", "").split(":"))
-
 
 # Application definition
 
@@ -50,6 +47,7 @@ INSTALLED_APPS = [
     "core.apps.CoreConfig",
     "camping.apps.CampingConfig",
     "user.apps.UserConfig",
+    "recipe.apps.RecipeConfig",
     # 3rd apps
     "rest_framework",
     "drf_spectacular",
@@ -86,7 +84,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "app.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -100,7 +97,6 @@ DATABASES = {
         "PORT": os.getenv("DB_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -120,7 +116,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -131,7 +126,6 @@ TIME_ZONE = "Asia/Seoul"
 USE_I18N = True
 
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

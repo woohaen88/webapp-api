@@ -2,15 +2,15 @@
 Database models.
 """
 
-from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
 )
-
-from django.conf import settings
+from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 
 class UserManager(BaseUserManager):
@@ -70,6 +70,7 @@ class Camping(models.Model):
     class Meta:
         ordering = ["-update_dt"]
 
+
 class CampingTag(models.Model):
     """Tag object"""
 
@@ -77,8 +78,32 @@ class CampingTag(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE
     )
 
-    name = models.CharField(max_length=255, unique=True)
-    slug = models.SlugField(max_length=255, allow_unicode=True, unique=True)
+    name = models.CharField(max_length=255)
+    # slug = models.SlugField(max_length=255, allow_unicode=True, unique=True)
 
     def __str__(self) -> str:
         return self.name
+
+    class Meta:
+        verbose_name = 'camping_tag'
+        verbose_name_plural = _('Camping Tags')
+        ordering = ['-name']
+
+class Recipe(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    time_minutes = models.PositiveIntegerField()
+    price = models.PositiveIntegerField()
+    link = models.CharField(max_length=255, blank=True)
+
+    update_dt = models.DateTimeField(auto_now=True)
+    create_dt = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["-create_dt"]
+        verbose_name = _("Recipe",)
+        verbose_name_plural = _("Recipe")
