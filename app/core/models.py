@@ -79,6 +79,7 @@ class CampingTag(models.Model):
     )
 
     name = models.CharField(max_length=255)
+
     # slug = models.SlugField(max_length=255, allow_unicode=True, unique=True)
 
     def __str__(self) -> str:
@@ -89,6 +90,7 @@ class CampingTag(models.Model):
         verbose_name_plural = _('Camping Tags')
         ordering = ['-name']
 
+
 class Recipe(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
@@ -97,6 +99,8 @@ class Recipe(models.Model):
     price = models.PositiveIntegerField()
     link = models.CharField(max_length=255, blank=True)
 
+    recipe_tags = models.ManyToManyField("RecipeTag")
+
     update_dt = models.DateTimeField(auto_now=True)
     create_dt = models.DateTimeField(auto_now_add=True)
 
@@ -104,6 +108,21 @@ class Recipe(models.Model):
         return self.title
 
     class Meta:
-        ordering = ["-create_dt"]
-        verbose_name = _("Recipe",)
+        ordering = ["-update_dt"]
+        verbose_name = _("Recipe", )
         verbose_name_plural = _("Recipe")
+
+
+class RecipeTag(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, allow_unicode=True)
+
+    update_dt = models.DateTimeField(auto_now=True)
+    create_dt = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["update_dt"]

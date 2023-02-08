@@ -4,7 +4,6 @@ Test for the tags API
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from django.utils.text import slugify
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -69,7 +68,7 @@ class PrivateTagsAPITests(TestCase):
         """Test list of tags is limited to authenticated user"""
         user2 = create_user(email="user2@example.com")
         CampingTag.objects.create(user=user2, name="Fruitty", )
-        tag = CampingTag.objects.create(user=self.user, name="AfterTag",)
+        tag = CampingTag.objects.create(user=self.user, name="AfterTag", )
 
         res = self.client.get(TAGS_URL)
 

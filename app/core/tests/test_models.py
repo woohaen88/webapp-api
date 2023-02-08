@@ -7,17 +7,7 @@ from django.test import TestCase
 from django.utils.text import slugify
 
 from core import models
-
-
-def create_user(**params):
-    defaults = {
-        "email": "user@example.com",
-        "password": "testpassword123"
-    }
-    defaults.update(params)
-
-    user = get_user_model().objects.create_user(**defaults)
-    return user
+from utils.functools import create_user
 
 
 class ModelTests(TestCase):
@@ -90,3 +80,13 @@ class ModelTests(TestCase):
             link="http://example.com",
         )
         self.assertEqual(str(recipe), recipe.title)
+
+    def test_create_recipetag(self):
+        """recipetag create"""
+        user = create_user()
+        recipe_tag = models.RecipeTag.objects.create(
+            user=user,
+            name="name",
+            slug=slugify("name", allow_unicode=True)
+        )
+        self.assertEqual(str(recipe_tag), recipe_tag.name)

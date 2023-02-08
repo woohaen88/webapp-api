@@ -72,6 +72,7 @@ class CampingSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 class CampingDetailSerializer(CampingSerializer):
     """Serializer for camping detail view"""
 

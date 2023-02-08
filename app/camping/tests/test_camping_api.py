@@ -3,11 +3,9 @@ test camping api
 """
 from datetime import datetime
 
-import resource
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from django.utils.text import slugify
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -200,8 +198,8 @@ class PrivateRecipeAPITests(TestCase):
         Test: 캠핑에 포스트 요청을 보낼 때 tag를 포함하여 보냄
         """
 
-        CampingTag.objects.create(user=self.user, name="tag1",)
-        CampingTag.objects.create(user=self.user, name="tag2",)
+        CampingTag.objects.create(user=self.user, name="tag1", )
+        CampingTag.objects.create(user=self.user, name="tag2", )
 
         payload = dict(
             title="DeepForest",
@@ -268,6 +266,3 @@ class PrivateRecipeAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(camping.camping_tags.count(), 0)
-
-
-

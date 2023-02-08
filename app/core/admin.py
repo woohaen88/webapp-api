@@ -48,3 +48,13 @@ class UserAdmin(admin.ModelAdmin):
 class CampingTagAdmin(admin.ModelAdmin):
     # prepopulated_fields = {"slug": ("name",), }
     pass
+
+
+@admin.register(models.Recipe)
+class RecipeAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(models.RecipeTag)
+class RecipeTagAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("name",)}
