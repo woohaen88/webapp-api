@@ -37,6 +37,17 @@ services:
       - MYSQL_DATABASE=${DB_NAME}
       - MYSQL_ROOT_PASSWORD=${DB_PASS}  
       - MYSQL_ROOT_USER=${DB_USER}
+
+  react:
+    build:
+      context: ./docker-context/react
+    restart: always
+    networks:
+      - default
+    volumes:
+      - "./webapp:/webapp"
+    ports:
+      - "3000:3000"
     
 
 volumes:
