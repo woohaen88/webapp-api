@@ -1,12 +1,16 @@
-FROM node:14
+FROM node:16
+LABEL maintainer="woohaen88@gmail.com"
+
+RUN echo "helloworld"
 
 COPY ./run.sh /run.sh
 
 EXPOSE 3000
 
-RUN chmod +x /run.sh && \
-    npx create-react-app webapp
+RUN npx create-react-app webapp
+
+RUN chmod +x /run.sh
 
 WORKDIR /webapp
 
-CMD ["run.sh"]
+CMD ["/run.sh"]

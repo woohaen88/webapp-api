@@ -435,3 +435,26 @@ github_token.txt
 test.py
 pyvenv.cfg
 bin/
+
+# react
+webapp/.pnp
+webapp/.pnp.js
+
+# testing
+webapp/coverage
+
+# production
+/build
+
+# misc
+webapp/.DS_Store
+webapp/.env.local
+webapp/.env.development.local
+webapp/.env.test.local
+webapp/.env.production.local
+
+webapp/npm-debug.log*
+webapp/yarn-debug.log*
+webapp/yarn-error.log*
+
+webapp/node_modules
