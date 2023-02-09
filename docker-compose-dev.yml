@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  react-study:
+    build:
+      context: ./docker-context/react-study
+    restart: always
+    networks:
+      - study
+    volumes:
+      - "./react-study:/react-study"
+    ports:
+      - "3001:3000"
+
+
+networks:
+  study:
