@@ -1,23 +1,19 @@
 import logo from './logo.svg';
 import './App.css';
+import {useState} from "react";
 
 function App() {
+    let [likecount, setLikecount] = useState(0)
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="black-nav">
+        ReactBlog
+      </div>
+
+      <div className="list">
+        <h1>남자 코트 추천 <span onClick={ () => {setLikecount(likecount+1)} }>👍 {likecount}</span></h1>
+        <p>2월 17일 발행</p>
+      </div>
     </div>
   );
 }
