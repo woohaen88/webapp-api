@@ -1,16 +1,17 @@
 version: '3.9'
 
 services:
-  react-study:
+  webapp-study:
     build:
-      context: ./docker-context/react-study
+      context: docker-context/webapp-study
     restart: always
+    working_dir: /webapp-study
     networks:
       - study
     volumes:
-      - "./react-study:/react-study"
+      - "./webapp-study:/webapp-study"
     ports:
-      - "3001:3000"
+      - "8081:8080"
 
 
 networks:
